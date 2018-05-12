@@ -53,7 +53,15 @@ StatusPublisher::StatusPublisher(CallbackAsyncSerial* cmd_serial)
   mPowerPub = mNH.advertise<std_msgs::Float64>("bw_sensors/Power", 1, true);
   mStatusFlagPub = mNH.advertise<std_msgs::Int32>("bw_sensors/StatusFlag",1,true);
 
-  debug_flag=false;
+  debug_flag=true;
+  yaw_index=0;
+  yaw_sum=0;
+  yaw_omega=0;
+  yaw_ready=false;
+  for(int i=0;i<100;i++)
+  {
+    yaw_deltas[i]=0.0;
+  }
 }
 
 void StatusPublisher::Refresh()
@@ -64,6 +72,7 @@ void StatusPublisher::Refresh()
     static float yaw_last=0.0;
     static int update_nums=0;
     boost::mutex::scoped_lock lock(mMutex);
+
     float angle;
     if(car_status.status==1 && yaw_ready )
     {
@@ -101,6 +110,7 @@ void StatusPublisher::Refresh()
           {
             yaw_index = 0;
           }
+
           update_nums++;
           if(update_nums>300)
           {
@@ -109,13 +119,12 @@ void StatusPublisher::Refresh()
             yaw_omega = yaw_sum/100.0;
             update_nums=25;
           }
-        }
 
+        }
       }
      else
      {
        //更新飘逸速率
-      // std::cout<<"oups4: "<<std::endl;
        if(std::fabs(CarTwist.linear.x) < 0.001 && std::fabs(CarTwist.angular.z) < 0.001 )
        {
          //
@@ -177,13 +186,12 @@ void StatusPublisher::Refresh()
       if( car_status.theta > 360) car_status.theta -= 360;
       if( car_status.theta < 0 ) car_status.theta += 360;
       yaw_last=yaw;
-
       //发布IMU topic
       ros::Time current_time = ros::Time::now();
       tf::Quaternion q;
       q.setRPY(roll/180.0*PI, -pitch/180.0*PI, car_status.theta/180.0*PI);
       CarIMU.header.stamp = current_time;
-      CarIMU.header.frame_id = "imu";
+      CarIMU.header.frame_id = "bw_sensors_imu";
       CarIMU.orientation.x=q.x();
       CarIMU.orientation.y=q.y();
       CarIMU.orientation.z=q.z();
@@ -202,7 +210,6 @@ void StatusPublisher::Refresh()
 
       static unsigned int ii=0;
       ii++;
-
       if(ii%5==0)
       {
         //发布超声波topic
@@ -234,28 +241,21 @@ void StatusPublisher::Refresh()
           mSonar4Pub.publish(CarSonar4);
         }
       }
-      //flag
-      std_msgs::Int32 flag;
-      if(car_status.status==1  && yaw_ready)
-      {
-        car_status.status=1;
-      }
-      else
-      {
-        car_status.status=0;
-      }
-      flag.data=car_status.status;
-      //底层障碍物信息
-      if((car_status.distance[0]+car_status.distance[1]+car_status.distance[2]+car_status.distance[3])>-0.8&&(car_status.distance[0]+car_status.distance[0]+car_status.distance[0]+car_status.distance[0])<1.2)
-      {
-        //有障碍物
-        flag.data=2;
-      }
-      mStatusFlagPub.publish(flag);
-      //电压
-      CarPower.data = car_status.power;
-      mPowerPub.publish(CarPower);
     }
+    //flag
+    std_msgs::Int32 flag;
+    if(car_status.status==1  && yaw_ready)
+    {
+      flag.data=1;
+    }
+    else
+    {
+      flag.data=0;
+    }
+    mStatusFlagPub.publish(flag);
+    //电压
+    CarPower.data = car_status.power;
+    mPowerPub.publish(CarPower);
   }
 }
 
