@@ -16,25 +16,25 @@ StatusPublisher::StatusPublisher(CallbackAsyncSerial* cmd_serial)
 
   CarSonar1.header.frame_id = "sonar1";
   CarSonar1.radiation_type = 0;
-  CarSonar1.field_of_view = 0.7;
+  CarSonar1.field_of_view = 0.35;
   CarSonar1.min_range = 0.19;
   CarSonar1.max_range = 4.2;
 
   CarSonar2.header.frame_id = "sonar2";
   CarSonar2.radiation_type = 0;
-  CarSonar2.field_of_view = 0.7;
+  CarSonar2.field_of_view = 0.35;
   CarSonar2.min_range = 0.19;
   CarSonar2.max_range = 4.2;
 
   CarSonar3.header.frame_id = "sonar3";
   CarSonar3.radiation_type = 0;
-  CarSonar3.field_of_view = 0.7;
+  CarSonar3.field_of_view = 0.35;
   CarSonar3.min_range = 0.19;
   CarSonar3.max_range = 4.2;
 
   CarSonar4.header.frame_id = "sonar4";
   CarSonar4.radiation_type = 0;
-  CarSonar4.field_of_view = 0.7;
+  CarSonar4.field_of_view = 0.35;
   CarSonar4.min_range = 0.19;
   CarSonar4.max_range = 4.2;
 

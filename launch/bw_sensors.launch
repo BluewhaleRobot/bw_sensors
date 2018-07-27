@@ -4,9 +4,9 @@
     <param name="baud" value="115200"/>
     <remap from="/bw_sensors/Odom" to="/my_odom" />
   </node>
-  <node pkg="tf" type="static_transform_publisher" name="baselinkSonar_broadcaster1" args="0.1125 0.194856 0.15 1.0472 0 0  base_link sonar1 50"/>
-  <node pkg="tf" type="static_transform_publisher" name="baselinkSonar_broadcaster2" args="0.225 0 0.15 0 0 0  base_link sonar2 50"/>
-  <node pkg="tf" type="static_transform_publisher" name="baselinkSonar_broadcaster3" args="0.1125 -0.194856 0.15 5.23599 0 0  base_link sonar3 50"/>
-  <node pkg="tf" type="static_transform_publisher" name="baselinkSonar_broadcaster4" args="-0.225 0 0.15 3.1415926 0 0  base_link sonar4 50"/>
+  <node pkg="tf" type="static_transform_publisher" name="baselinkSonar_broadcaster1" args="-0.1 0.08 0.13 0.523599 0 0  base_link sonar1 50"/>
+  <node pkg="tf" type="static_transform_publisher" name="baselinkSonar_broadcaster2" args="-0.1 0 0.13 0 0 0  base_link sonar2 50"/>
+  <node pkg="tf" type="static_transform_publisher" name="baselinkSonar_broadcaster3" args="-0.1 -0.08 0.13 5.759586 0 0  base_link sonar3 50"/>
+  <node pkg="tf" type="static_transform_publisher" name="baselinkSonar_broadcaster4" args="-0.23 0 0.13 3.1415926 0 0  base_link sonar4 50"/>
   <node pkg="tf" type="static_transform_publisher" name="baselinkIMU_broadcaster1" args="0. 0. 0. 0 0 0  base_link bw_sensors_imu 50"/>
 </launch>
