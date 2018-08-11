@@ -201,9 +201,9 @@ void StatusPublisher::Refresh()
       CarIMU.angular_velocity.y=car_status.IMU[4]* PI /180.0f;
       CarIMU.angular_velocity.z=car_status.IMU[5]* PI /180.0f;
 
-      CarIMU.linear_acceleration.x=car_status.IMU[0]*9.8;
-      CarIMU.linear_acceleration.y=car_status.IMU[1]*9.8;
-      CarIMU.linear_acceleration.z=car_status.IMU[2]*9.8;
+      CarIMU.linear_acceleration.x=car_status.IMU[0];
+      CarIMU.linear_acceleration.y=car_status.IMU[1];
+      CarIMU.linear_acceleration.z=car_status.IMU[2];
 
       mIMUPub.publish(CarIMU);
       mbUpdated_ = false;
