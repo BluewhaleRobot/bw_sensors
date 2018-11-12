@@ -1,5 +1,6 @@
 #include "bw_sensors/AsyncSerial.h"
 #include "bw_sensors/bw_sensors.h"
+#include <std_msgs/Bool.h>
 #define DISABLE 0
 #define ENABLE 1
 
@@ -52,7 +53,7 @@ StatusPublisher::StatusPublisher(CallbackAsyncSerial* cmd_serial)
   mIMUPub = mNH.advertise<sensor_msgs::Imu>("bw_sensors/IMU", 1, true);
   mPowerPub = mNH.advertise<std_msgs::Float64>("bw_sensors/Power", 1, true);
   mStatusFlagPub = mNH.advertise<std_msgs::Int32>("bw_sensors/StatusFlag",1,true);
-
+  mStopPub = mNH.advertise<std_msgs::Bool>("/stopFlag",1,true);
   debug_flag=true;
   yaw_index=0;
   yaw_sum=0;
@@ -212,12 +213,16 @@ void StatusPublisher::Refresh()
       ii++;
       if(ii%5==0)
       {
+        bool stopFlag = false;
+        float bar_distance = 0.6;
         //发布超声波topic
         if(car_status.distance[0]>0.1)
         {
           CarSonar1.header.stamp = current_time;
           CarSonar1.range = car_status.distance[0];
           mSonar1Pub.publish(CarSonar1);
+          if(car_status.distance[0]>2.1&&car_status.distance[0]<bar_distance) stopFlag = true;
+
         }
 
         if(car_status.distance[1]>0.1)
@@ -225,6 +230,7 @@ void StatusPublisher::Refresh()
           CarSonar2.header.stamp = current_time;
           CarSonar2.range = car_status.distance[1];
           mSonar2Pub.publish(CarSonar2);
+          if(car_status.distance[1]>2.1&&car_status.distance[1]<bar_distance) stopFlag = true;
         }
 
         if(car_status.distance[2]>0.1)
@@ -232,6 +238,7 @@ void StatusPublisher::Refresh()
           CarSonar3.header.stamp = current_time;
           CarSonar3.range = car_status.distance[2];
           mSonar3Pub.publish(CarSonar3);
+          if(car_status.distance[2]>2.1&&car_status.distance[2]<bar_distance) stopFlag = true;
         }
 
         if(car_status.distance[3]>0.1)
@@ -240,6 +247,10 @@ void StatusPublisher::Refresh()
           CarSonar4.range = car_status.distance[3];
           mSonar4Pub.publish(CarSonar4);
         }
+        std_msgs::Bool flag;
+        flag.data = stopFlag;
+        mStopPub.publish(flag);
+
       }
     }
     //flag

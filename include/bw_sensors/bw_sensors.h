@@ -60,6 +60,7 @@ private:
     ros::Publisher mSonar2Pub;
     ros::Publisher mSonar3Pub;
     ros::Publisher mSonar4Pub;
+    ros::Publisher mStopPub;
     bool mbUpdated_;
 
     boost::mutex mMutex;
